@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.study.SpringSecurityMybatis.repository.OAuth2UserMapper">
+
+    <insert id="save">
+        insert into oauth2_user
+        values(default, #{userId}, #{oAuth2Name}, #{provider})
+    </insert>
+
+    <insert id="submitsave">
+        insert into oauth2_user
+        values(default, #{userId}, #{username}, #{password}, #{name}, #{email}, #{oAuth2Name}, #{provider}
+    </insert>
+
+</mapper>

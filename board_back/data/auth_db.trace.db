@@ -1,0 +1,158 @@
+2024-08-26 15:18:12 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "USER" already exists; SQL statement:
+CREATE TABLE USER ( id BIGINT AUTO_INCREMENT PRIMARY KEY, username VARCHAR(255) UNIQUE not null, password VARCHAR(255) not null, name VARCHAR(255) not null ) [42101-200]
+2024-08-26 15:19:39 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "CREATE TABLE USER_ROLES ( ID BIGINT AUTO_INCREMENT PRIMARY KEY, USER_ID BIGINT NOT NULL, ROLE_ID BIGINT NOT NULL, )[*]"; expected "identifier"; SQL statement:
+CREATE TABLE USER_ROLES ( id BIGINT AUTO_INCREMENT PRIMARY KEY, user_id BIGINT not null, role_id BIGINT not null, ) [42001-200]
+2024-08-26 15:20:11 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "ROLE" already exists; SQL statement:
+CREATE TABLE ROLE ( id BIGINT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255) UNIQUE not null ) [42101-200]
+2024-08-26 17:27:02 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "ALTER TABLE USER MODIFY[*] ID BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY"; expected "., ADD, SET, RENAME, DROP, ALTER"; SQL statement:
+alter table user modify id BIGINT not null auto_increment primary key [42001-200]
+2024-08-26 17:27:19 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "ALTER TABLE USER MODIFY[*] ID BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY"; expected "., ADD, SET, RENAME, DROP, ALTER"; SQL statement:
+alter table user modify id bigint not null auto_increment primary key [42001-200]
+2024-08-26 17:27:26 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "ALTER TABLE USER MODIFY[*] `ID`BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY"; expected "., ADD, SET, RENAME, DROP, ALTER"; SQL statement:
+alter table user modify `id`bigint not null auto_increment primary key [42001-200]
+2024-08-26 17:27:28 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "ALTER TABLE USER MODIFY[*] `ID` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY"; expected "., ADD, SET, RENAME, DROP, ALTER"; SQL statement:
+alter table user modify `id` bigint not null auto_increment primary key [42001-200]
+2024-08-26 17:27:39 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "ALTER TABLE USER MODIFY[*] `USER`.`ID` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY"; expected "., ADD, SET, RENAME, DROP, ALTER"; SQL statement:
+alter table user modify `user`.`id` bigint not null auto_increment primary key [42001-200]
+2024-08-26 17:27:46 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "ALTER TABLE USER MODIFY[*] `AUTH_DB`.`USER`.`ID` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY"; expected "., ADD, SET, RENAME, DROP, ALTER"; SQL statement:
+alter table user modify `auth_db`.`user`.`id` bigint not null auto_increment primary key [42001-200]
+2024-08-26 17:35:44 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "CREATE TABLE USER ( ID BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY, USERNAME VARCHAR(255) UNIQUE NOT NULL, PASSWORD VARCHAR(255) NOT NULL, NAME VARCHAR(255) NOT NULL, )[*]"; expected "identifier"; SQL statement:
+CREATE TABLE USER ( id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY, username VARCHAR(255) UNIQUE NOT NULL, password VARCHAR(255) not null, name VARCHAR(255) not null, ) [42001-200]
+2024-08-26 17:35:59 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "USER" not found; SQL statement:
+DROP TABLE USER [42102-200]
+2024-08-26 17:39:44 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Invalid parameter count for "VALUES", expected count: "1"; SQL statement:
+INSERT INTO ROLE VALUES(DEFAULT, 'ROLE_USER'), VALUES(DEFAULT, 'ROLE_MANAGER'), VALUES(DEFAULT, 'ROLE_ADMIN') [7001-200]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:453)
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:429)
+	at org.h2.message.DbException.get(DbException.java:205)
+	at org.h2.expression.function.Function.addParameter(Function.java:653)
+	at org.h2.command.Parser.readFunctionParameters(Parser.java:3962)
+	at org.h2.command.Parser.readKeywordFunction(Parser.java:4101)
+	at org.h2.command.Parser.readTerm(Parser.java:4429)
+	at org.h2.command.Parser.readFactor(Parser.java:3343)
+	at org.h2.command.Parser.readSum(Parser.java:3330)
+	at org.h2.command.Parser.readConcat(Parser.java:3305)
+	at org.h2.command.Parser.readCondition(Parser.java:3108)
+	at org.h2.command.Parser.readExpression(Parser.java:3059)
+	at org.h2.command.Parser.parseValuesForCommand(Parser.java:1881)
+	at org.h2.command.Parser.parseInsertGivenTable(Parser.java:1817)
+	at org.h2.command.Parser.parseInsert(Parser.java:1749)
+	at org.h2.command.Parser.parsePrepared(Parser.java:954)
+	at org.h2.command.Parser.parse(Parser.java:843)
+	at org.h2.command.Parser.parse(Parser.java:815)
+	at org.h2.command.Parser.prepareCommand(Parser.java:738)
+	at org.h2.engine.Session.prepareLocal(Session.java:657)
+	at org.h2.engine.Session.prepareCommand(Session.java:595)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1235)
+	at org.h2.jdbc.JdbcStatement.executeInternal(JdbcStatement.java:212)
+	at org.h2.jdbc.JdbcStatement.execute(JdbcStatement.java:201)
+	at com.zaxxer.hikari.pool.ProxyStatement.execute(ProxyStatement.java:94)
+	at com.zaxxer.hikari.pool.HikariProxyStatement.execute(HikariProxyStatement.java)
+	at org.springframework.jdbc.datasource.init.ScriptUtils.executeSqlScript(ScriptUtils.java:261)
+	at org.springframework.jdbc.datasource.init.ResourceDatabasePopulator.populate(ResourceDatabasePopulator.java:254)
+	at org.springframework.jdbc.datasource.init.DatabasePopulatorUtils.execute(DatabasePopulatorUtils.java:54)
+	at org.springframework.boot.jdbc.init.DataSourceScriptDatabaseInitializer.runScripts(DataSourceScriptDatabaseInitializer.java:90)
+	at org.springframework.boot.sql.init.AbstractScriptDatabaseInitializer.runScripts(AbstractScriptDatabaseInitializer.java:145)
+	at org.springframework.boot.sql.init.AbstractScriptDatabaseInitializer.applyScripts(AbstractScriptDatabaseInitializer.java:107)
+	at org.springframework.boot.sql.init.AbstractScriptDatabaseInitializer.applySchemaScripts(AbstractScriptDatabaseInitializer.java:97)
+	at org.springframework.boot.sql.init.AbstractScriptDatabaseInitializer.initializeDatabase(AbstractScriptDatabaseInitializer.java:75)
+	at org.springframework.boot.sql.init.AbstractScriptDatabaseInitializer.afterPropertiesSet(AbstractScriptDatabaseInitializer.java:65)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1863)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1800)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:620)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:542)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:335)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:333)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:208)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:953)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:918)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:583)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:145)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:740)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:415)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:303)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1312)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1301)
+	at com.study.SpringSecurityMybatis.SpringSecurityMybatisApplication.main(SpringSecurityMybatisApplication.java:10)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:49)
+2024-08-26 17:40:37 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Invalid parameter count for "VALUES", expected count: "1"; SQL statement:
+INSERT INTO ROLE VALUES(1, 'ROLE_USER'), VALUES(2, 'ROLE_MANAGER'), VALUES(3, 'ROLE_ADMIN') [7001-200]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:453)
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:429)
+	at org.h2.message.DbException.get(DbException.java:205)
+	at org.h2.expression.function.Function.addParameter(Function.java:653)
+	at org.h2.command.Parser.readFunctionParameters(Parser.java:3962)
+	at org.h2.command.Parser.readKeywordFunction(Parser.java:4101)
+	at org.h2.command.Parser.readTerm(Parser.java:4429)
+	at org.h2.command.Parser.readFactor(Parser.java:3343)
+	at org.h2.command.Parser.readSum(Parser.java:3330)
+	at org.h2.command.Parser.readConcat(Parser.java:3305)
+	at org.h2.command.Parser.readCondition(Parser.java:3108)
+	at org.h2.command.Parser.readExpression(Parser.java:3059)
+	at org.h2.command.Parser.parseValuesForCommand(Parser.java:1881)
+	at org.h2.command.Parser.parseInsertGivenTable(Parser.java:1817)
+	at org.h2.command.Parser.parseInsert(Parser.java:1749)
+	at org.h2.command.Parser.parsePrepared(Parser.java:954)
+	at org.h2.command.Parser.parse(Parser.java:843)
+	at org.h2.command.Parser.parse(Parser.java:815)
+	at org.h2.command.Parser.prepareCommand(Parser.java:738)
+	at org.h2.engine.Session.prepareLocal(Session.java:657)
+	at org.h2.engine.Session.prepareCommand(Session.java:595)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1235)
+	at org.h2.jdbc.JdbcStatement.executeInternal(JdbcStatement.java:212)
+	at org.h2.jdbc.JdbcStatement.execute(JdbcStatement.java:201)
+	at com.zaxxer.hikari.pool.ProxyStatement.execute(ProxyStatement.java:94)
+	at com.zaxxer.hikari.pool.HikariProxyStatement.execute(HikariProxyStatement.java)
+	at org.springframework.jdbc.datasource.init.ScriptUtils.executeSqlScript(ScriptUtils.java:261)
+	at org.springframework.jdbc.datasource.init.ResourceDatabasePopulator.populate(ResourceDatabasePopulator.java:254)
+	at org.springframework.jdbc.datasource.init.DatabasePopulatorUtils.execute(DatabasePopulatorUtils.java:54)
+	at org.springframework.boot.jdbc.init.DataSourceScriptDatabaseInitializer.runScripts(DataSourceScriptDatabaseInitializer.java:90)
+	at org.springframework.boot.sql.init.AbstractScriptDatabaseInitializer.runScripts(AbstractScriptDatabaseInitializer.java:145)
+	at org.springframework.boot.sql.init.AbstractScriptDatabaseInitializer.applyScripts(AbstractScriptDatabaseInitializer.java:107)
+	at org.springframework.boot.sql.init.AbstractScriptDatabaseInitializer.applySchemaScripts(AbstractScriptDatabaseInitializer.java:97)
+	at org.springframework.boot.sql.init.AbstractScriptDatabaseInitializer.initializeDatabase(AbstractScriptDatabaseInitializer.java:75)
+	at org.springframework.boot.sql.init.AbstractScriptDatabaseInitializer.afterPropertiesSet(AbstractScriptDatabaseInitializer.java:65)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1863)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1800)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:620)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:542)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:335)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:333)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:208)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:953)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:918)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:583)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:145)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:740)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:415)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:303)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1312)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1301)
+	at com.study.SpringSecurityMybatis.SpringSecurityMybatisApplication.main(SpringSecurityMybatisApplication.java:10)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:49)
+2024-08-29 11:30:13 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "ALTER TABLE `USER` ADD COLUMN 'email'[*] VARCHAR(255) NOT NULL"; expected "identifier"; SQL statement:
+ALTER TABLE `USER` ADD COLUMN 'email' VARCHAR(255) NOT NULL [42001-200]
