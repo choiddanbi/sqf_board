@@ -116,7 +116,7 @@ function DetailPage(props) {
         }
     );
 
-    // 좋아요 
+    // 좋아요 정보 들고오기
     const boardLike = useQuery(
         ["boardLikeQuery"],
         async () => {
@@ -129,17 +129,19 @@ function DetailPage(props) {
     );
 
     // userquery 종류 중 하나인데 get요청 외에 사용!
+    // 좋아요 누르면
     const likeMutation = useMutation(
         async () => {
             return await instance.post(`/board/${boardId}/like`)
         },
         {
-            onSuccess: response => { // 좋아요가 눌리면 boardLike 다시 실행 ?
+            onSuccess: response => { // 좋아요가 눌리면 boardLike 다시 실행 -> db에서 좋아요 정보 다시 들고옴
                 boardLike.refetch();
             }
         }
     );
 
+    // 좋아요 취소 누르면
     const dislikeMutation = useMutation(
         async () => {
             return await instance.delete(`/board/like/${boardLike.data?.data.boardLikeId}`)
@@ -152,11 +154,13 @@ function DetailPage(props) {
     );
 
 
+    // 로그인이 안되어있으면 아예 좋아요 버튼이 없음
     const handleDislikeOnClike = () => {
         dislikeMutation.mutateAsync();
     };
 
-        
+    
+    // 
     const handleLikeOnClike = () => {
         if(!userInfoData?.data) { // 로그인이 안되어 있으면
             if(window.confirm("로그인 후 이용 가능합니다. 로그인 페이지로 이동하시겠습니까 ?")) {
