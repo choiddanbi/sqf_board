@@ -9,6 +9,8 @@ import { storage } from '../../../firebase/firebase';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import { CircleLoader, RingLoader } from 'react-spinners';
 import { boardApi } from '../../../apis/boardApi';
+import { useNavigate } from 'react-router-dom';
+import { instance } from '../../../apis/util/instance';
 Quill.register("modules/imageResize", ImageResize);
 /** @jsxImportSource @emotion/react */
 
@@ -79,12 +81,10 @@ const loadingLayout = css`
 `;
 
 
-
-
-
-
-
 function WritePage(props) {
+    // springboot 에서 주는 이름이랑 맞춰줘야함 
+    const navigate = useNavigate();
+
     const [ board, setBoard ] = useState({
         title: "",
         content: ""
@@ -93,9 +93,10 @@ function WritePage(props) {
     const quillRef = useRef(null);
     const [ isUploading, setUploading ] = useState(false);
 
+
+
     const handleWriteSubmitOnClick = async () => {
-        
-        console.log(board);
+        // console.log(board);
         const boardData = await boardApi(board);
         // instance.post("/board", board); 로도 가능
         if(!boardData.isSuccess) {
@@ -103,7 +104,37 @@ function WritePage(props) {
             return;
         }
         alert("성공");
+        // console.log(boardData);
+        navigate(`/board/detail/${boardData.boardId.id}`); 
     }
+
+    
+    // const handleWriteSubmitOnClick2 = async () => {
+    //     instance.post("/board", board) 
+
+    //     .then((response) => {
+    //         alert("작성 완료");
+    //         navigate(`/board/detail/${response.data.boardId}`);
+    //     })
+    //     .catch((error) => {
+    //         console.error(error); // 오류 처리
+    //         const fieldErrors = error.response.data;
+
+    //         for (let fieldError of fieldErrors) {
+    //             if (fieldError.field === "title") {
+    //                 alert(fieldError.defaultMessage);
+    //                 return;
+    //             }
+    //         }
+    //         for (let fieldError of fieldErrors) {
+    //             if (fieldError.field === "content") {
+    //                 alert(fieldError.defaultMessage);
+    //                 return;
+    //             }
+    //         }
+    //     });
+    // }
+
 
     const handleTitleInputOnChange = (e) => {
         setBoard(board => ({
@@ -115,7 +146,7 @@ function WritePage(props) {
     const handleQuillValueOnChange = (value) => {
         setBoard(board => ({
             ...board,
-            content: quillRef.current.getText().trim() === "" ? "" : value
+            content: value //quillRef.current.getText().trim() === "" ? "" : value
         }));
     }
 

@@ -9,6 +9,7 @@ import UserProfilePage from "./pages/UserProfilePage/UserProfilePage";
 import OAuth2JoinPage from "./pages/OAuth2JoinPage/OAuth2JoinPage";
 import OAuth2LoginPage from "./pages/OAuth2LoginPage/OAuth2LoginPage";
 import WritePage from "./pages/BoardPages/WritePage/WritePage";
+import DetailPage from "./pages/BoardPages/DatailPage/DetailPage";
 
 /** 
  * 페이지 이동 시 Auth(로그인, 토큰) 확인
@@ -109,6 +110,7 @@ function App() {
 
             <Route path="/board" element={ <></> } />
             <Route path="/board/write" element={ <WritePage /> } />
+            <Route path="/board/detail/:boardId" element={ <DetailPage />} />
 
             <Route path="/admin/*" element={ <></> }/>
             <Route path="/admin/*" element={ <h1>Not Found</h1> }/>

@@ -16,7 +16,7 @@ public class ReqWriteBoardDto {
         return Board.builder()
                 .title(title)
                 .content(content)
-                .user_id(id)
+                .userId(id)
                 .build();
     }
 }

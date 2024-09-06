@@ -156,3 +156,222 @@ INSERT INTO ROLE VALUES(1, 'ROLE_USER'), VALUES(2, 'ROLE_MANAGER'), VALUES(3, 'R
 2024-08-29 11:30:13 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "ALTER TABLE `USER` ADD COLUMN 'email'[*] VARCHAR(255) NOT NULL"; expected "identifier"; SQL statement:
 ALTER TABLE `USER` ADD COLUMN 'email' VARCHAR(255) NOT NULL [42001-200]
+2024-09-06 12:17:55 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT
+            B.ID AS BOARD_ID
+            B[*].TITLE,
+            B.CONTENT,
+            B.USER_ID,
+            B.VIEW_COUNT,
+            U.ID AS U_USER_ID,
+            U.USERNAME
+        FROM
+            BOARD B
+            LEFT OUTER JOIN USER U ON(U.ID = B.USER_ID)
+        WHERE
+            ID=?"; SQL statement:
+select
+            b.id as board_id
+            b.title,
+            b.content,
+            b.user_id,
+            b.view_count,
+            u.id as u_user_id,
+            u.username
+        from
+            board b
+            left outer join user u on(u.id = b.user_id)
+        where
+            id=? [42000-200]
+2024-09-06 12:19:16 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT
+            B.ID AS BOARD_ID
+            B[*].TITLE,
+            B.CONTENT,
+            B.USER_ID,
+            B.VIEW_COUNT,
+            U.ID AS U_USER_ID,
+            U.USERNAME
+        FROM
+            BOARD B
+            LEFT OUTER JOIN USER U ON(U.ID = B.USER_ID)
+        WHERE
+            ID=?"; SQL statement:
+select
+            b.id as board_id
+            b.title,
+            b.content,
+            b.user_id,
+            b.view_count,
+            u.id as u_user_id,
+            u.username
+        from
+            board b
+            left outer join user u on(u.id = b.user_id)
+        where
+            id=? [42000-200]
+2024-09-06 12:19:18 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT
+            B.ID AS BOARD_ID
+            B[*].TITLE,
+            B.CONTENT,
+            B.USER_ID,
+            B.VIEW_COUNT,
+            U.ID AS U_USER_ID,
+            U.USERNAME
+        FROM
+            BOARD B
+            LEFT OUTER JOIN USER U ON(U.ID = B.USER_ID)
+        WHERE
+            ID=?"; SQL statement:
+select
+            b.id as board_id
+            b.title,
+            b.content,
+            b.user_id,
+            b.view_count,
+            u.id as u_user_id,
+            u.username
+        from
+            board b
+            left outer join user u on(u.id = b.user_id)
+        where
+            id=? [42000-200]
+2024-09-06 12:20:47 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT
+            B.ID AS BOARD_ID
+            B[*].TITLE,
+            B.CONTENT,
+            B.USER_ID,
+            B.VIEW_COUNT,
+            U.ID AS U_USER_ID,
+            U.USERNAME
+        FROM
+            BOARD B
+            LEFT OUTER JOIN USER U ON(U.ID = B.USER_ID)
+        WHERE
+            B.ID=?"; SQL statement:
+select
+            b.id as board_id
+            b.title,
+            b.content,
+            b.user_id,
+            b.view_count,
+            u.id as u_user_id,
+            u.username
+        from
+            board b
+            left outer join user u on(u.id = b.user_id)
+        where
+            b.id=? [42000-200]
+2024-09-06 12:20:47 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT
+            B.ID AS BOARD_ID
+            B[*].TITLE,
+            B.CONTENT,
+            B.USER_ID,
+            B.VIEW_COUNT,
+            U.ID AS U_USER_ID,
+            U.USERNAME
+        FROM
+            BOARD B
+            LEFT OUTER JOIN USER U ON(U.ID = B.USER_ID)
+        WHERE
+            B.ID=?"; SQL statement:
+select
+            b.id as board_id
+            b.title,
+            b.content,
+            b.user_id,
+            b.view_count,
+            u.id as u_user_id,
+            u.username
+        from
+            board b
+            left outer join user u on(u.id = b.user_id)
+        where
+            b.id=? [42000-200]
+2024-09-06 12:21:01 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT
+            B.ID AS BOARD_ID
+            B[*].TITLE,
+            B.CONTENT,
+            B.USER_ID,
+            B.VIEW_COUNT,
+            U.ID AS U_USER_ID,
+            U.USERNAME
+        FROM
+            BOARD B
+            LEFT OUTER JOIN USER U ON(U.ID = B.USER_ID)
+        WHERE
+            B.ID=?"; SQL statement:
+select
+            b.id as board_id
+            b.title,
+            b.content,
+            b.user_id,
+            b.view_count,
+            u.id as u_user_id,
+            u.username
+        from
+            board b
+            left outer join user u on(u.id = b.user_id)
+        where
+            b.id=? [42000-200]
+2024-09-06 14:08:40 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT
+            B.ID AS BOARD_ID
+            B[*].TITLE,
+            B.CONTENT,
+            B.USER_ID,
+            B.VIEW_COUNT,
+            U.ID AS U_USER_ID,
+            U.USERNAME
+        FROM
+            BOARD B
+            LEFT OUTER JOIN USER U ON(U.ID = B.USER_ID)
+        WHERE
+            B.ID = ?"; SQL statement:
+select
+            b.id as board_id
+            b.title,
+            b.content,
+            b.user_id,
+            b.view_count,
+            u.id as u_user_id,
+            u.username
+        from
+            board b
+            left outer join user u on(u.id = b.user_id)
+        where
+            b.id = ? [42000-200]
+2024-09-06 14:11:51 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT
+            B.ID AS BOARD_ID
+            B[*].TITLE,
+            B.CONTENT,
+            B.USER_ID,
+            B.VIEW_COUNT,
+            U.ID AS U_USER_ID,
+            U.USERNAME
+        FROM
+            BOARD B
+            LEFT OUTER JOIN USER U ON(U.ID = B.USER_ID)
+        WHERE
+            B.ID = ?"; SQL statement:
+select
+            b.id as board_id
+            b.title,
+            b.content,
+            b.user_id,
+            b.view_count,
+            u.id as u_user_id,
+            u.username
+        from
+            board b
+            left outer join user u on(u.id = b.user_id)
+        where
+            b.id = ? [42000-200]
+2024-09-06 15:31:03 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "CREATE TABLE BOARD_LIKE ([*]"; expected "identifier"; SQL statement:
+CREATE TABLE BOARD_LIKE ( [42001-200]

@@ -6,4 +6,6 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface BoardMapper {
     int save(Board board);
+    Board findById(Long id);
+    int modifyViewCountById(Long id);
 }

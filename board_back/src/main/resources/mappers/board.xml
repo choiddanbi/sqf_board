@@ -4,9 +4,53 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
+<!--조인을 하려면 resultMap 사용-->
 <mapper namespace="com.study.SpringSecurityMybatis.repository.BoardMapper">
+    <resultMap id="boardResultMap" type="com.study.SpringSecurityMybatis.entity.Board">
+        <id property="id" column="board_id" />
+        <result property="title" column="title" />
+        <result property="content" column="content" />
+        <result property="userId" column="user_id" />
+        <result property="viewCount" column="view_count" />
+        <association property="user" resultMap="userResultMap" />
+    </resultMap>
+
+
+    <resultMap id="userResultMap" type="com.study.SpringSecurityMybatis.entity.User">
+        <id property="id" column="u_user_id" />
+        <result property="username" column="username" />
+    </resultMap>
+
+
     <insert id="save" useGeneratedKeys="true" keyProperty="id">
+        <!--useGeneratedKeys="true" keyProperty="id" : AutoIncrement 된 값이 id에 들어간다 !!-->
         insert into board
-        values(default, #{title}, #{content}, #{user_id})
+        values(default, #{title}, #{content}, #{userId}, default)
     </insert>
+
+
+    <update id="modifyViewCountById">
+        update board
+        set
+            view_count = view_count + 1
+        where
+            id = #{id}
+    </update>
+
+
+    <select id="findById" resultMap="boardResultMap">
+        select
+            b.id as board_id,
+            b.title,
+            b.content,
+            b.user_id,
+            b.view_count,
+            u.id as u_user_id,
+            u.username
+        from
+            board b
+            left outer join user u on(u.id = b.user_id)
+        where
+            b.id = #{id}
+    </select>
 </mapper>
