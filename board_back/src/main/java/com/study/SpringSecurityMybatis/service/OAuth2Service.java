@@ -48,6 +48,7 @@ public class OAuth2Service implements OAuth2UserService {
     private BCryptPasswordEncoder passwordEncoder;
 
 
+    // 이기는 그냥 config 에서 딱 얘를 동작
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = defaultOAuth2UserService.loadUser(userRequest);
@@ -91,12 +92,13 @@ public class OAuth2Service implements OAuth2UserService {
         return new DefaultOAuth2User(new HashSet<>(), oAuth2Attributes, "id"); // 이떄 authentication 객체 생성됨 ( principal 가지고있음, Oauth2SuccessHandler에서 사용 )
     }
 
+    // 계정 통합
     public void merge(com.study.SpringSecurityMybatis.entity.OAuth2User oAuth2User) {
         oAuth2UserMapper.save(oAuth2User);
     }
 
 
-    // 회원가입
+    // oauth2 회원가입
     @Transactional(rollbackFor = Exception.class)
     public void signup(ReqOAuth2SubmitDto dto) {
         User user = dto.toEntity(passwordEncoder);

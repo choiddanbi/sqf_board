@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.study.SpringSecurityMybatis.repository.CommentMapper">
+
+    <insert id="save">
+        insert into comment
+        values(default, #{boardId}, #{parentId}, #{content}, #{writerId}, now())
+    </insert>
+
+    <select id="findAllByBoardId" resultType="com.study.SpringSecurityMybatis.entity.Comment">
+        WITH RECURSIVE comment_tree(id, board_id, parent_id, content, writer_id, create_date, level, path) AS (
+            SELECT
+                id,
+                board_id,
+                parent_id,
+                content,
+                writer_id,
+                create_date,
+                0 AS level,
+                CAST(id AS VARCHAR(255)) AS path
+            FROM
+                comment
+            WHERE
+                parent_id IS NULL
+
+            UNION ALL
+
+            SELECT
+                c.id,
+                c.board_id,
+                c.parent_id,
+                c.content,
+                c.writer_id,
+                c.create_date,
+                ct.level + 1,
+                CONCAT(ct.path, ',', c.id) AS path
+            FROM
+                comment c
+                JOIN comment_tree ct ON (c.parent_id = ct.id)
+            )
+
+            SELECT
+                ct.id,
+                ct.board_id as boardId,
+                ct.parent_id as parentId,
+                ct.content,
+                ct.writer_id as writerId,
+                ct.create_date as createDate,
+                ct.level,
+                u.username,
+                u.img
+            FROM
+                comment_tree ct
+                left outer join user u on(u.id = ct.writer_id)
+            WHERE
+                ct.board_id = #{boardId}
+            ORDER BY
+                ct.path;
+    </select>
+
+    <select id="getCommentCountByBoardId" resultType="java.lang.Integer">
+        select
+            count(*)
+        from
+            comment
+        where
+            board_id = #{boardId}
+    </select>
+</mapper>

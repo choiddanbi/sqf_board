@@ -3,14 +3,12 @@ import React, { useCallback, useMemo, useRef, useState } from 'react';
 import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import ImageResize from 'quill-image-resize';
-import { Parchment } from 'quill';
 import { v4 as uuid } from "uuid";
 import { storage } from '../../../firebase/firebase';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
-import { CircleLoader, RingLoader } from 'react-spinners';
+import { RingLoader } from 'react-spinners';
 import { boardApi } from '../../../apis/boardApi';
 import { useNavigate } from 'react-router-dom';
-import { instance } from '../../../apis/util/instance';
 Quill.register("modules/imageResize", ImageResize);
 /** @jsxImportSource @emotion/react */
 
@@ -146,7 +144,7 @@ function WritePage(props) {
     const handleQuillValueOnChange = (value) => {
         setBoard(board => ({
             ...board,
-            content: value //quillRef.current.getText().trim() === "" ? "" : value
+            content: value //quillRef.current.getText().trim() === "" ? "" : value // value 
         }));
     }
 
@@ -178,6 +176,10 @@ function WritePage(props) {
                     editor.setSelection(editPoint.index + 1); // 커서를 첨부된 이미지 끝으로 이동
                     editor.insertText(editPoint.index + 1, "\n"); // 줄바꿈
                     setUploading(false);
+                    // setBoard(board => ({
+                    //     ...board,
+                    //     content: editor.root.innerHTML
+                    // })); // handleQuillValueOnChange 위에 value 를 quill로 넣으면 이걸 해줘야하ㅡ는데 난 안됑....
                 } 
             );
 
