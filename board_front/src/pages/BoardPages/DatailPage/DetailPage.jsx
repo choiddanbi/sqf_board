@@ -198,7 +198,6 @@ function DetailPage(props) {
     const queryClient = useQueryClient();
     const userInfoData = queryClient.getQueryData("userInfoQuery");
     const navigate = useNavigate();
-    // console.log(boardId);
 
 
     const [ commentData, setCommentData ] = useState({
@@ -206,54 +205,6 @@ function DetailPage(props) {
         parentId: null,
         content: ""
     });
-
-    const handleReplyButtonOnClick = (commentId) => {
-        setCommentData({ // 초기화
-            boardId: boardId,
-            parentId: null,
-            content: ""
-        });
-
-        setCommentData(commentData => ({
-            ...commentData,
-            parentId: commentId === commentData.parentId ? null : commentId
-        }));
-    }
-    
-    const handleCommentInputOnChage = (e) => {
-        setCommentData(commentData => ({
-            ...commentData,
-            [e.target.name]: e.target.value
-        }));
-    }
-
-    // 댓글 작성하기
-    const commentMutation = useMutation(
-        async () => {
-            return await instance.post("/board/comment", commentData);
-        },
-        {
-            onSuccess: response => {
-                alert("작성이 완료되었습니다.");
-                setCommentData({ // 초기화
-                    boardId: boardId,
-                    parentId: null,
-                    content: ""
-                });
-                comments.refetch(); // 댓글 정보 다시 들고옴
-            }
-        }
-    );
-
-    const handleCommentSubmitOnClick = () => {
-        if(!userInfoData?.data) { // 로그인이 안되어 있으면
-            if(window.confirm("로그인 후 이용 가능합니다. 로그인 페이지로 이동하시겠습니까 ?")) {
-                navigate("/user/login");
-            }
-            return;
-        }
-        commentMutation.mutateAsync();
-    }
 
 
     // react query 정의
@@ -281,6 +232,21 @@ function DetailPage(props) {
         }
     );
 
+    // 댓글 리스트, 갯수 조회
+    // response 안에 data 안에 comments안에 {comment} 들을 배열안에 담아서 옴
+    // comments의 응답 response 가 다른 말로는(?) comments.data 임!!
+    const comments = useQuery(
+        ["commentsQuery"],
+        async () => {
+            return await instance.get(`/board/${boardId}/comments`);
+        },
+        {
+            retry: 0,
+            onSuccess: response => console.log(response)
+        }
+    );
+
+
     // userquery 종류 중 하나인데 get요청 외에 사용!
     // 좋아요 누르면
     const likeMutation = useMutation(
@@ -307,26 +273,35 @@ function DetailPage(props) {
     );
 
 
-    // 댓글 리스트, 갯수 조회
-    // response 안에 data 안에 comments안에 {comment} 들을 배열안에 담아서 옴
-    // comments의 응답 response 가 다른 말로는(?) comments.data 임!!
-    const comments = useQuery(
-        ["commentsQuery"],
+    // 댓글 작성하기
+    const commentMutation = useMutation(
         async () => {
-            return await instance.get(`/board/${boardId}/comment`);
+            return await instance.post("/board/comment", commentData);
         },
         {
-            retry: 0,
-            onSuccess: response => console.log(response)
+            onSuccess: response => {
+                alert("작성이 완료되었습니다.");
+                setCommentData({ // 초기화
+                    boardId: boardId,
+                    parentId: null,
+                    content: ""
+                });
+                comments.refetch(); // 댓글 정보 다시 들고옴, refetch 랑 invalid 는 둘당 ㅛ청 다십 ㅗ내느건데 refetch는 부모에서 incalid는 자식에서(useclient)
+            }
         }
     );
 
-
-    // 로그인이 안되어있으면 아예 좋아요 버튼이 없음
-    const handleDislikeOnClike = () => {
-        dislikeMutation.mutateAsync();
-    };
-
+    const deleteCommentMutation = useMutation(
+        async (commentId) => {
+            return await instance.delete(`/board/comment/${commentId}`);
+        },
+        {
+            onSuccess: response => {
+                alert("댓글을 삭제하였습니다.");
+                comments.refetch();
+            }
+        }
+    );
     
     
     const handleLikeOnClike = () => {
@@ -338,6 +313,57 @@ function DetailPage(props) {
         }
         likeMutation.mutateAsync();
     };
+    
+    
+    // 로그인이 안되어있으면 아예 좋아요 버튼이 없음
+    const handleDislikeOnClike = () => {
+        dislikeMutation.mutateAsync();
+    };
+
+
+    const handleCommentInputOnChage = (e) => {
+        setCommentData(commentData => ({
+            ...commentData,
+            [e.target.name]: e.target.value
+        }));
+    }
+
+
+    const handleCommentSubmitOnClick = () => {
+        if(!userInfoData?.data) { // 로그인이 안되어 있으면
+            if(window.confirm("로그인 후 이용 가능합니다. 로그인 페이지로 이동하시겠습니까 ?")) {
+                navigate("/user/login");
+            }
+            return;
+        }
+        commentMutation.mutateAsync();
+    }
+
+
+    const handleReplyButtonOnClick = (commentId) => {
+        setCommentData(commentData => ({ // 초기화
+            boardId: boardId,
+            parentId: commentId === commentData.parentId ? null : commentId, // 아래에 설명 참고 !
+            content: ""
+        }));
+
+        // setCommentData(commentData => ({
+        //     ...commentData,
+        //     content: "",
+        //     parentId: commentId === commentData.parentId ? null : commentId
+        //     // 맨 처음에는 commentId는 내가 선택한 댓글id( commentData.parentId = null ) 둘이 다르니까 parentid : commentId 대입 ---> 이후부터 parentId 에 null 또는 commentId 댇입
+        //     // commentId 는 여러 댓글들 중 댓글 하나( db에서 AI ), commentData.parentId는 내가 선택한 댓글
+        //     // commentId === commentData.parentId 는 대댓글상태 -> parentId: null 로 줘서 대댓글 상태 해제
+        //     // commentId !== commentData.parentId 이면 첫댓글 상태 -> parentId: commentId 로 줘서 대댓글 상태 부여
+        // }));
+    }
+    
+    const handleDeleteCommentButtonOnClick = (commentId) => {
+        deleteCommentMutation.mutateAsync(commentId);
+    }
+
+
+
 
 
     return (
@@ -402,6 +428,7 @@ function DetailPage(props) {
                         <div css={commentContainer}>
                                 <h2>댓글 {comments?.data?.data.commentCount}</h2>
                                 {
+                                    // 첫댓글
                                     commentData.parentId === null &&
                                     <div css={commentWriteBox(0)}>
                                         <textarea name="content" onChange={handleCommentInputOnChage} value={commentData.content} placeholder='댓글을 입력하세요...'></textarea>
@@ -414,39 +441,44 @@ function DetailPage(props) {
                                     // comments.data 가 response
                                     // comments.data.data 까지가 dto
                                     comments?.data?.data.comments.map(comment => 
-                                        <>
-                                        <div css={commentListContainer(comment.level)}>
-                                            <div>
-                                                <img src="{comment.img}" alt="" />
-                                            </div>
-                                            <div css={commentDetail}>
-                                                <div css={detailHeader}>
-                                                    <span>{comment.username}</span>
-                                                    <span>{comment.createDate}</span>
+                                        <div key={comment.id} >
+                                            <div css={commentListContainer(comment.level)}>
+                                                <div>
+                                                    <img src="{comment.img}" alt="" />
                                                 </div>
-                                                    <pre css={detailContent}>{comment.content}</pre>
-                                                <div css={detailButtons}>
-                                                    {
-                                                        userInfoData?.data?.userId === comment.writerId && 
-                                                        <div>
-                                                            <button>수정</button>
-                                                            <button>삭제</button>
-                                                        </div>
-                                                    }
-                                                        <div>
-                                                            <button onClick={() => handleReplyButtonOnClick(comment.id)}>답글</button>
-                                                        </div>
+                                                <div css={commentDetail}>
+                                                    <div css={detailHeader}>
+                                                        <span>{comment.username}</span>
+                                                        <span>{new Date(comment.createDate).toLocaleString()}</span>
+                                                        {/* 스프링부트에서 온 LocalDate 를 (날짜 시간 사이에 T들어간 형태) T뺀 상태로 변환 */}
+                                                    </div>
+                                                        <pre css={detailContent}>{comment.content}</pre>
+                                                    <div css={detailButtons}>
+                                                        {
+                                                            userInfoData?.data?.userId === comment.writerId && 
+                                                            <div>
+                                                                <button>수정</button>
+                                                                <button onClick={() => handleDeleteCommentButtonOnClick(comment.id)}>삭제</button>
+                                                            </div>
+                                                        }
+                                                        {
+                                                            comment.level < 3 &&
+                                                            <div>
+                                                                <button onClick={() => handleReplyButtonOnClick(comment.id)}>답글</button>
+                                                            </div>
+                                                        }
+                                                    </div>
                                                 </div>
                                             </div>
+                                                {
+                                                    // 대댓글
+                                                    commentData.parentId === comment.id && 
+                                                    <div css={commentWriteBox(comment.level)}>
+                                                        <textarea name="content" onChange={handleCommentInputOnChage} value={commentData.content} placeholder='답글을 입력하세요...'></textarea>
+                                                        <button onClick={handleCommentSubmitOnClick}>작성하기</button>
+                                                    </div>
+                                                }
                                         </div>
-                                            {
-                                                commentData.parentId === comment.id && 
-                                                <div css={commentWriteBox(comment.level)}>
-                                                    <textarea name="content" onChange={handleCommentInputOnChage} value={commentData.content} placeholder='답글을 입력하세요...'></textarea>
-                                                    <button onClick={handleCommentSubmitOnClick}>작성하기</button>
-                                                </div>
-                                            }
-                                        </>
                                     )
                                 }
                             </div>

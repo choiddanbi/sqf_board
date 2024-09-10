@@ -20,8 +20,15 @@ public class CommentController {
     }
 
     // 댓글 정보 및 갯수 조회
-    @GetMapping("/board/{boardId}/comment")
+    @GetMapping("/board/{boardId}/comments")
     public ResponseEntity<?> getComments(@PathVariable Long boardId) {
         return ResponseEntity.ok().body(commentService.getComments(boardId));
+    }
+
+    // 댓글 삭제
+    @DeleteMapping("/board/comment/{commentId}")
+    public ResponseEntity<?> deleteComment(@PathVariable Long commentId) {
+        commentService.deleteComments(commentId);
+        return ResponseEntity.ok().body(true);
     }
 }

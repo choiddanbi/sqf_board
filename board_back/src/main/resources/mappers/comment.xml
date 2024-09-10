@@ -11,8 +11,45 @@
         values(default, #{boardId}, #{parentId}, #{content}, #{writerId}, now())
     </insert>
 
+    <delete id="deleteById">
+        WITH RECURSIVE comment_tree(id, board_id, parent_id, content, writer_id, create_date) AS (
+        SELECT
+            id,
+            board_id,
+            parent_id,
+            content,
+            writer_id,
+            create_date
+        FROM
+            comment
+        WHERE
+            id = #{id}
+
+        UNION ALL
+
+        SELECT
+            c.id,
+            c.board_id,
+            c.parent_id,
+            c.content,
+            c.writer_id,
+            c.create_date
+        FROM
+            comment c
+            JOIN comment_tree ct ON (c.parent_id = ct.id)
+        )
+
+        delete
+        from
+            comment
+        where
+            id in(select id from comment_tree)
+    </delete>
+
     <select id="findAllByBoardId" resultType="com.study.SpringSecurityMybatis.entity.Comment">
         WITH RECURSIVE comment_tree(id, board_id, parent_id, content, writer_id, create_date, level, path) AS (
+            <!-- with 문 = 아래의 () 안에 있는 sql문의 결과를 ( 즉, select union all select 문 ) comment_tree 라는 가상의 테이블에 저장해라-->
+            <!-- recursive 문 = 나 자신의 테이블을 재참조해서 테이블을 생성해라 ( 즉, from절이 comment_tree 가 됨 ) -->
             SELECT
                 id,
                 board_id,
@@ -21,11 +58,13 @@
                 writer_id,
                 create_date,
                 0 AS level,
-                CAST(id AS VARCHAR(255)) AS path
+                LPAD(CAST(id AS VARCHAR(255)), 5, 0) AS path
+                <!-- 문자열 앞에 5칸을 0으롤 채우겠따 EX) 00001 00002 .... 00011 -->
             FROM
                 comment
             WHERE
                 parent_id IS NULL
+                and board_id = #{boardId}
 
             UNION ALL
 
@@ -37,11 +76,14 @@
                 c.writer_id,
                 c.create_date,
                 ct.level + 1,
-                CONCAT(ct.path, ',', c.id) AS path
+                CONCAT(ct.path, ',', LPAD(c.id, 5, 0)) AS path
             FROM
                 comment c
                 JOIN comment_tree ct ON (c.parent_id = ct.id)
+            where
+                c.board_id = #{boardId}
             )
+
 
             SELECT
                 ct.id,
@@ -56,10 +98,9 @@
             FROM
                 comment_tree ct
                 left outer join user u on(u.id = ct.writer_id)
-            WHERE
-                ct.board_id = #{boardId}
             ORDER BY
                 ct.path;
+                <!--order by 안해주면 안되는 이유 : 리액트의 map은 테이블의 row 순서대로 뿌려주는거라서 -->
     </select>
 
     <select id="getCommentCountByBoardId" resultType="java.lang.Integer">
@@ -69,5 +110,31 @@
             comment
         where
             board_id = #{boardId}
+    </select>
+
+    <select id="findById" resultType="com.study.SpringSecurityMybatis.entity.Comment">
+        select
+            id,
+            parent_id as parentId,
+            content,
+            writer_id as writerId,
+            create_date as createDate
+        from
+            comment
+        where
+            id = #{id}
+    </select>
+
+    <select id="findByParentId" resultType="com.study.SpringSecurityMybatis.entity.Comment">
+        select
+            id,
+            parent_id as parentId,
+            content,
+            writer_id as writerId,
+            create_date as createDate
+        from
+            comment
+        where
+            parent_id = #{parentId}
     </select>
 </mapper>

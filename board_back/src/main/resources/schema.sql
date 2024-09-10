@@ -49,16 +49,23 @@
 --    board_id BIGINT not null,
 --    user_id BIGINT not null
 --);
+--
+--CREATE TABLE COMMENT (
+--    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+--    board_id BIGINT not null,
+--    parent_id BIGINT null,
+--    content TEXT not null,
+--    writer_id BIGINT not null,
+--    create_date DATETIME not null
+--);
 
-CREATE TABLE COMMENT (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    board_id BIGINT not null,
-    parent_id BIGINT null,
-    content TEXT not null,
-    writer_id BIGINT not null,
-    create_date DATETIME not null
-);
-
+-- 트리거 생성
+--CREATE TRIGGER before_delete_comment
+--BEFORE DELETE ON comment
+--FOR EACH ROW
+--BEGIN
+--    delete from comment where parent_id = old.id
+--END;
 
 --ALTER TABLE BOARD ADD COLUMN view_count INT not null DEFAULT 0;
 

@@ -10,4 +10,7 @@ public interface CommentMapper {
     int save(Comment comment);
     List<Comment> findAllByBoardId(Long boardId); // db에서 orderby로 정렬한 순서를 유지시켜주기 위해서 List 사용
     int getCommentCountByBoardId(Long boardId);
+    int deleteById(Long id);
+    Comment findById(Long id);
+    Comment findByParentId(Long parentId);
 }
