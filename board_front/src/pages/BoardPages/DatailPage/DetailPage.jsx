@@ -207,6 +207,12 @@ function DetailPage(props) {
     });
 
 
+    // 댓글 수정
+    const [ commentModifyData, setCommentModifyData ] = useState({
+        commentId: 0,
+        content: ""
+    });
+
     // react query 정의
     // 페이지 열리면 useQuery 는 자동으로 날림
     // 게시글 디테일
@@ -286,10 +292,27 @@ function DetailPage(props) {
                     parentId: null,
                     content: ""
                 });
-                comments.refetch(); // 댓글 정보 다시 들고옴, refetch 랑 invalid 는 둘당 ㅛ청 다십 ㅗ내느건데 refetch는 부모에서 incalid는 자식에서(useclient)
+                comments.refetch(); // 댓글 정보 다시 들고옴, refetch 랑 invalid 는 둘다 요청 다시 보내는건데 refetch는 부모에서 incalid는 자식에서(useclient)
             }
         }
     );
+
+    // 댓글 수정
+    const modifyCommentMutation = useMutation(
+        async () => {
+            return await instance.put(`/board/comment/${commentModifyData.commentId}`, commentModifyData);
+        },
+        {
+            onSuccess: () => {
+                alert("작성이 완료되었습니다.");
+                setCommentModifyData({ // 초기화
+                    commentId: 0,
+                    content: ""
+                });
+                comments.refetch(); // 댓글 정보 다시 들고옴, refetch 랑 invalid 는 둘당 ㅛ청 다십 ㅗ내느건데 refetch는 부모에서 incalid는 자식에서(useclient)
+            }
+        }
+    )
 
     const deleteCommentMutation = useMutation(
         async (commentId) => {
@@ -340,6 +363,11 @@ function DetailPage(props) {
     }
 
 
+    const handleCommentModifySubmitOnClick = () => {
+        modifyCommentMutation.mutateAsync();
+    }
+
+
     const handleReplyButtonOnClick = (commentId) => {
         setCommentData(commentData => ({ // 초기화
             boardId: boardId,
@@ -357,11 +385,34 @@ function DetailPage(props) {
         //     // commentId !== commentData.parentId 이면 첫댓글 상태 -> parentId: commentId 로 줘서 대댓글 상태 부여
         // }));
     }
-    
+
+    const handleCommentModifyInputOnChage = (e) => {
+        setCommentModifyData(commentData => ({
+            ...commentData,
+            [e.target.name]: e.target.value
+        }));
+    }
+
+    // 수정 버튼
+    const handleModifyCommentButtonOnClick = (commentId, content) => {
+        setCommentModifyData(commentData => ({
+            commentId,
+            content: content // content 로 작성해도 가능
+        }));
+    }
+
+    const handleModifyCommentCancleButtonOnClick = () => {
+        setCommentModifyData(commentData => ({
+            commentId : 0,
+            content: ""
+        }));
+    }
+
     const handleDeleteCommentButtonOnClick = (commentId) => {
         deleteCommentMutation.mutateAsync(commentId);
     }
 
+    
 
 
 
@@ -455,11 +506,18 @@ function DetailPage(props) {
                                                         <pre css={detailContent}>{comment.content}</pre>
                                                     <div css={detailButtons}>
                                                         {
-                                                            userInfoData?.data?.userId === comment.writerId && 
-                                                            <div>
-                                                                <button>수정</button>
+                                                        <div>
+                                                            {
+                                                                userInfoData?.data?.userId === comment.writerId && 
+                                                                    commentModifyData.commentId === comment.id 
+                                                                    ?
+                                                                    <button onClick={handleModifyCommentCancleButtonOnClick}>취소</button>
+                                                                    :
+                                                                    <button onClick={() => handleModifyCommentButtonOnClick(comment.id, comment.content)}>수정</button>
+                                                                // content 를 같이 보내주는 이유: 작성한 글 textarea에 보여주려고
+                                                                }
                                                                 <button onClick={() => handleDeleteCommentButtonOnClick(comment.id)}>삭제</button>
-                                                            </div>
+                                                        </div>
                                                         }
                                                         {
                                                             comment.level < 3 &&
@@ -476,6 +534,14 @@ function DetailPage(props) {
                                                     <div css={commentWriteBox(comment.level)}>
                                                         <textarea name="content" onChange={handleCommentInputOnChage} value={commentData.content} placeholder='답글을 입력하세요...'></textarea>
                                                         <button onClick={handleCommentSubmitOnClick}>작성하기</button>
+                                                    </div>
+                                                }
+                                                {
+                                                    // 댓글 수정
+                                                    commentModifyData.commentId === comment.id && 
+                                                    <div css={commentWriteBox(comment.level)}>
+                                                        <textarea name="content" onChange={handleCommentModifyInputOnChage} value={commentModifyData.content} placeholder='답글을 입력하세요...'></textarea>
+                                                        <button onClick={handleCommentModifySubmitOnClick}>수정하기</button>
                                                     </div>
                                                 }
                                         </div>

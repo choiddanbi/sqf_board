@@ -13,4 +13,5 @@ public interface CommentMapper {
     int deleteById(Long id);
     Comment findById(Long id);
     Comment findByParentId(Long parentId);
+    int modifyComment(Comment comment);
 }

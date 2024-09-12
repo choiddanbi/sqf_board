@@ -11,6 +11,15 @@
         values(default, #{boardId}, #{parentId}, #{content}, #{writerId}, now())
     </insert>
 
+    <update id="modifyComment">
+        update
+            comment
+        set
+            content = #{content}
+        where
+            id = #{id}
+    </update>
+
     <delete id="deleteById">
         WITH RECURSIVE comment_tree(id, board_id, parent_id, content, writer_id, create_date) AS (
         SELECT

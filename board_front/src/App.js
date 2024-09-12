@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import IndexPage from "./pages/IndexPage/IndexPage";
 import UserJoinPage from "./pages/UserJoinPage/UserJoinPage";
 import UserLoginPage from "./pages/UserLoginPage/UserLoginPage";
@@ -10,6 +10,7 @@ import OAuth2JoinPage from "./pages/OAuth2JoinPage/OAuth2JoinPage";
 import OAuth2LoginPage from "./pages/OAuth2LoginPage/OAuth2LoginPage";
 import WritePage from "./pages/BoardPages/WritePage/WritePage";
 import DetailPage from "./pages/BoardPages/DatailPage/DetailPage";
+import NumberBoardListPage from "./pages/BoardPages/NumberBoardListPage/NumberBoardListPage";
 
 /** 
  * 페이지 이동 시 Auth(로그인, 토큰) 확인
@@ -53,7 +54,7 @@ function App() {
         async () => {
             setAuthRefresh(false);
             return await instance.get("/auth/access", {
-                params: { // pathvariable 로 springboot한테 요청 보내는데 이때 보내는 정보가 localstorage 에서 꺼낸 accesstoken
+                params: { // params를 쓰면 pathvariable이나 requestbody 안해도 됨 => springboot한테 요청 보내는데 이때 보내는 정보가 localstorage 에서 꺼낸 accesstoken
                     accessToken: localStorage.getItem("accessToken")
                 }
             }); 
@@ -108,9 +109,10 @@ function App() {
             <Route path="/user/login/oauth2" element={ <OAuth2LoginPage />}/>
             <Route path="/profile" element={ <UserProfilePage /> } />
 
-            <Route path="/board" element={ <></> } />
-            <Route path="/board/write" element={ <WritePage /> } />
+            <Route path="/board/number" element={ <NumberBoardListPage /> } /> 
+            <Route path="/board/scroll" element={ <></> } />
             <Route path="/board/detail/:boardId" element={ <DetailPage />} />
+            <Route path="/board/write" element={ <WritePage /> } />
 
             <Route path="/admin/*" element={ <></> }/>
             <Route path="/admin/*" element={ <h1>Not Found</h1> }/>

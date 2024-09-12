@@ -1,11 +1,14 @@
 package com.study.SpringSecurityMybatis.service;
 
+import com.study.SpringSecurityMybatis.dto.request.ReqBoardListDto;
 import com.study.SpringSecurityMybatis.dto.request.ReqWriteBoardDto;
 import com.study.SpringSecurityMybatis.dto.response.RespBoardDetailDto;
 import com.study.SpringSecurityMybatis.dto.response.RespBoardLikeInfoDto;
+import com.study.SpringSecurityMybatis.dto.response.RespBoardListDto;
 import com.study.SpringSecurityMybatis.dto.response.RespWriteBoardDto;
 import com.study.SpringSecurityMybatis.entity.Board;
 import com.study.SpringSecurityMybatis.entity.BoardLike;
+import com.study.SpringSecurityMybatis.entity.BoardList;
 import com.study.SpringSecurityMybatis.exception.NotFoundBoardException;
 import com.study.SpringSecurityMybatis.repository.BoardLikeMapper;
 import com.study.SpringSecurityMybatis.repository.BoardMapper;
@@ -14,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class BoardService {
@@ -36,6 +41,18 @@ public class BoardService {
                 .build();
     }
 
+    // 게시글 전체 조회
+    // 전체 게시글 갯수 + startIndex, limit 필요 !
+    public RespBoardListDto getBoardList(ReqBoardListDto dto) {
+        Long startIndex = ( dto.getPage() - 1 ) * dto.getLimit(); // 한 페이지당 limit개씩 ( 0번은 1~limit, 1번은 11~limit .... )
+        List<BoardList> boardLists =  boardMapper.findAllByStartIndexAndLimit(startIndex, dto.getLimit());
+        Integer boardTotalCount = boardMapper.getCountAll();
+
+        return RespBoardListDto.builder()
+                .boards(boardLists)
+                .totalCount(boardTotalCount)
+                .build();
+    }
 
 
 
@@ -103,4 +120,6 @@ public class BoardService {
     public void dislike(Long boardLikeId) {
         boardLikeMapper.deleteById(boardLikeId);
     }
+
+
 }

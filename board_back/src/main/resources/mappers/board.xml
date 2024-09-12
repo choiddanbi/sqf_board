@@ -53,4 +53,39 @@
         where
             b.id = #{id}
     </select>
+
+    <select id="findAllByStartIndexAndLimit" resultType="com.study.SpringSecurityMybatis.entity.BoardList">
+        with like_count as (
+            select
+                board_id,
+                count(*) as like_cnt
+            from
+                board_like
+            group by
+                board_id
+        )
+
+        select
+            b.id,
+            b.title,
+            u.username as writerName,
+            ifnull(lc.like_cnt, 0) as likeCount,
+            b.view_count as viewCount
+        from
+            board b
+            left outer join user u on(u.id = b.user_id)
+            left outer join like_count lc on(lc.board_id = b.id)
+        order by
+            b.id desc
+        limit #{startIndex}, #{limit}
+        <!--startIndex 부터 limit 갯수만큼 가져와라-->
+        <!--1일때 0, 2일때 10, 3일때 20.....-->
+    </select>
+
+    <select id="getCountAll" resultType="java.lang.Integer">
+        select
+            count(*)
+        from
+            board
+    </select>
 </mapper>

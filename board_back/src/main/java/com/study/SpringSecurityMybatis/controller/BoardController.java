@@ -1,6 +1,7 @@
 package com.study.SpringSecurityMybatis.controller;
 
 import com.study.SpringSecurityMybatis.aspect.annotation.ValidAop;
+import com.study.SpringSecurityMybatis.dto.request.ReqBoardListDto;
 import com.study.SpringSecurityMybatis.dto.request.ReqWriteBoardDto;
 import com.study.SpringSecurityMybatis.service.BoardService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +21,6 @@ public class BoardController {
     @ValidAop
     @PostMapping("/board")
     public ResponseEntity<?> write(@Valid @RequestBody ReqWriteBoardDto dto, BindingResult bindingResult) {
-//        System.out.println(dto);
-//        System.out.println("왜안돼");
         return ResponseEntity.ok().body(boardService.writeBoard(dto));
         // 이렇게하면 RespDto 안만들어도 되고 Service 의 자료형은 Long , return 도 board.getId()
         // return ResponseEntity.ok().body("boardId", boardService.writeBoard(dto));
@@ -39,7 +38,14 @@ public class BoardController {
         return ResponseEntity.ok().body(boardService.getBoardLike(boardId));
     }
 
-    // 좋아요 눈름 ( 로그인 필요 )
+    // 게시글 전체 조회
+    @GetMapping("/board/list")
+    public ResponseEntity<?> getBoards(ReqBoardListDto dto) {
+        System.out.println(dto);
+        return ResponseEntity.ok().body(boardService.getBoardList(dto));
+    }
+
+    // 좋아요 누름 ( 로그인 필요 )
     @PostMapping("/board/{boardId}/like")
     public ResponseEntity<?> like(@PathVariable Long boardId) {
         boardService.like(boardId);
