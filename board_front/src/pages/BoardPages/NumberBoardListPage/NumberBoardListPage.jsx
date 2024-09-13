@@ -42,14 +42,17 @@ const paginateContainer = css`
 
 
 function NumberBoardListPage(props) {
-    const [ searchParams, setSearchParams ] = useSearchParams();
+    // ? 를 기준으로 오른쪽이 usesearchParams 왼쪽이 useParams
+    const [ searchParams, setSearchParams ] = useSearchParams(); // 쿼리스트링 or params 란? 주소:포트/페이지URL?key=value 
     const [ totalPageCount, setTotalPageCount ] = useState(1);
     const navigate = useNavigate();
     const limit = 10;
 
 
-    const handlePageOnChange = (event) => {
-        navigate(`/board/number?page=${event.selected + 1}`);
+    // 페이지의 값은 변하지만 주소는 그대로이다 = 랜더링 되어지는 화면(컴포넌트)은 그대로!!
+    // page라는 값이 변함 -> dependency에 의해서 boardList useQuery 재동작
+    const handlePageOnChange = (e) => {
+        navigate(`/board/number?page=${e.selected + 1}`);
     }
 
     const boardList = useQuery(
@@ -60,7 +63,7 @@ function NumberBoardListPage(props) {
             onSuccess: response => setTotalPageCount(
                 response.data.totalCount % limit === 0 
                 ? response.data.totalCount / limit 
-                : (response.data.totalCount / limit) + 1)
+                : Math.floor(response.data.totalCount / limit) + 1)
         }
     );
 
@@ -102,7 +105,7 @@ function NumberBoardListPage(props) {
                     breakLabel= "..."
                     previousLabel={<> <IoMdArrowDropleft /> </>}
                     nextLabel={<> <IoMdArrowDropright /> </> }
-                    pageCount={totalPageCount - 1}
+                    pageCount={totalPageCount}
                     marginPagesDisplayed={2}
                     pageRangeDisplayed={5}
                     activeClassName='active'

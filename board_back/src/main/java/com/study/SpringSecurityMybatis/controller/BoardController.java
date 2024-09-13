@@ -41,7 +41,6 @@ public class BoardController {
     // 게시글 전체 조회
     @GetMapping("/board/list")
     public ResponseEntity<?> getBoards(ReqBoardListDto dto) {
-        System.out.println(dto);
         return ResponseEntity.ok().body(boardService.getBoardList(dto));
     }
 

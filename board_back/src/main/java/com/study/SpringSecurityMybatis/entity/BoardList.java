@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 public class BoardList {
     private Long id;
     private String title;
+    private String content;
+    private String writerProfileImg;
     private String writerName;
     private Integer likeCount;
     private Integer viewCount;

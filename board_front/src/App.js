@@ -11,6 +11,7 @@ import OAuth2LoginPage from "./pages/OAuth2LoginPage/OAuth2LoginPage";
 import WritePage from "./pages/BoardPages/WritePage/WritePage";
 import DetailPage from "./pages/BoardPages/DatailPage/DetailPage";
 import NumberBoardListPage from "./pages/BoardPages/NumberBoardListPage/NumberBoardListPage";
+import ScrollBoardListPage from "./pages/BoardPages/ScrollBoardListPage/ScrollBoardListPage";
 
 /** 
  * 페이지 이동 시 Auth(로그인, 토큰) 확인
@@ -110,7 +111,7 @@ function App() {
             <Route path="/profile" element={ <UserProfilePage /> } />
 
             <Route path="/board/number" element={ <NumberBoardListPage /> } /> 
-            <Route path="/board/scroll" element={ <></> } />
+            <Route path="/board/scroll" element={ <ScrollBoardListPage /> } />
             <Route path="/board/detail/:boardId" element={ <DetailPage />} />
             <Route path="/board/write" element={ <WritePage /> } />
 

@@ -68,6 +68,8 @@
         select
             b.id,
             b.title,
+            b.content,
+            u.img as writerProfileImg,
             u.username as writerName,
             ifnull(lc.like_cnt, 0) as likeCount,
             b.view_count as viewCount
