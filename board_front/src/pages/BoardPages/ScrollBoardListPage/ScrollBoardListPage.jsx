@@ -151,12 +151,14 @@ function ScrollBoardListPage(props) {
     );
 
     // 무한 스크롤 ( 스크롤을 내리다가 맨 아래에 있는 loadMoreRef 에 observer가 닿으면 동작 )
+    
     useEffect(() => {
-        if(!boardList.hasNextPage || !loadMoreRef.current ) {
+        if(!boardList.hasNextPage || !loadMoreRef.current ) { // 다음 페이지가 없고 스크롤이 맨 마지막이 아니라면
             return;
         }
 
         const observer = new IntersectionObserver((entries) => { 
+            console.log(entries);
             if(entries[0].isIntersecting) {
                 boardList.fetchNextPage(); // 다음 페이지 들고와라
             }
@@ -174,7 +176,7 @@ function ScrollBoardListPage(props) {
             <ul css={cardLayout}>
                 {
                     boardList.data?.pages.map(page => page.data.boards.map(board => {
-                        // console.log(boardList);
+                        console.log(boardList);
                         // 본문 안에 p태그 안에 <img> 태그가 있는 경우
                         const mainImgStartIndex = board.content.indexOf("<img"); // <img 로 시작하는 태그를 찾아서
                         let mainImg = board.content.slice(mainImgStartIndex); // <img> 부터 끝까지 자름

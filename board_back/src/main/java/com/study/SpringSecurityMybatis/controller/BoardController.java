@@ -2,6 +2,7 @@ package com.study.SpringSecurityMybatis.controller;
 
 import com.study.SpringSecurityMybatis.aspect.annotation.ValidAop;
 import com.study.SpringSecurityMybatis.dto.request.ReqBoardListDto;
+import com.study.SpringSecurityMybatis.dto.request.ReqSearchBoardDto;
 import com.study.SpringSecurityMybatis.dto.request.ReqWriteBoardDto;
 import com.study.SpringSecurityMybatis.service.BoardService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,13 @@ public class BoardController {
         return ResponseEntity.ok().body(boardService.writeBoard(dto));
         // 이렇게하면 RespDto 안만들어도 되고 Service 의 자료형은 Long , return 도 board.getId()
         // return ResponseEntity.ok().body("boardId", boardService.writeBoard(dto));
+    }
+
+    // 검색
+    @GetMapping("/board/search")
+    public ResponseEntity<?> getSearchBoards(ReqSearchBoardDto dto) {
+        System.out.println(dto);
+        return ResponseEntity.ok().body(boardService.getSearchBoard(dto));
     }
 
     // id 별 게시글 디테일 board 조회

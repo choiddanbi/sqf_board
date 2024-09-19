@@ -1,5 +1,5 @@
 import { css } from '@emotion/react';
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { useQueryClient } from 'react-query';
 import { Link, useNavigate } from 'react-router-dom';
 /** @jsxImportSource @emotion/react */
@@ -35,6 +35,10 @@ const leftBox = css`
     border: 2px solid #dbdbdb;
     border-radius: 10px;
     width: 64%;
+
+    & a {
+        margin-right: 10px;
+    }
 `;
 
 const rightBox = css`
@@ -119,9 +123,20 @@ function IndexPage(props) {
     const queryClient = useQueryClient(); // accessTokenValidQuery 는 query key값 (App.js 에 있음)
     const accessTokenValidState = queryClient.getQueryState("accessTokenValidQuery");
     const userInfoState = queryClient.getQueryState("userInfoQuery");
+    const [ searchValue, setSearchValue ] = useState("");
 
-    console.log(accessTokenValidState);
-    console.log(userInfoState);
+    const handleSearchInputOnChange = (e) => {
+        setSearchValue(e.target.value);
+    }
+
+    const handleSearchInputOnKeyDown = (e) => {
+        if(e.keyCode === 13) {
+            navigate(`/board/search?page=1&option=all&search=${searchValue}`);
+        }
+    }
+
+    // console.log(accessTokenValidState);
+    // console.log(userInfoState);
 
     const handleLoginButtonOnClick = () => {
         navigate("/user/login");
@@ -139,13 +154,14 @@ function IndexPage(props) {
     return (
         <div css={layout}>
             <header css={header}>
-                <input type="search" placeholder='검색어를 입력해 주세요.'/>
+                <input type="search" onChange={handleSearchInputOnChange} onKeyDown={handleSearchInputOnKeyDown} placeholder='검색어를 입력해 주세요.'/>
             </header>
 
             <main css={main}>
                 <div css={leftBox}> 
                     <Link to={"/board/number?page=1"}>게시글 번호</Link>   
                     <Link to={"/board/scroll"}>게시글 스크롤</Link>
+                    <Link to={"/board/search?page=1"}>게시글 검색</Link>
                     <Link to={"/board/write"}>글쓰기</Link>
                 </div>
                     {
