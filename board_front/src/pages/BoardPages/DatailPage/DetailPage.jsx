@@ -391,7 +391,8 @@ function DetailPage(props) {
     // 게시글 수정 완료 버튼
     const handleContentOkButton = (e) => {
         modifyCotnentMutation.mutateAsync();
-        navigate("/");
+        navigate(`/board/detail/${boardId}`);
+        setIsTrue(false);
     }
     
     // quill 로 값 받아오기
@@ -623,6 +624,7 @@ function DetailPage(props) {
                                 Parchment: Quill.import("parchment")
                                     },
                                 }}
+                                value={boards.content}
                             />
                             </>
                             :
