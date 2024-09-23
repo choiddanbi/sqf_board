@@ -33,6 +33,7 @@ public class CommentService {
                 .build();
     }
 
+    // 댓글 삭제
     public void deleteComments(Long commentId) {
         accessCheck(commentId);
         commentMapper.deleteById(commentId);

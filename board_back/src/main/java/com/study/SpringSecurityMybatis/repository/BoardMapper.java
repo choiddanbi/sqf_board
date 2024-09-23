@@ -19,4 +19,6 @@ public interface BoardMapper {
     int modifyViewCountById(Long id);
     int getCountAll();
     int getCountAllBySearch(Map<String, Object> params);
+    int deleteById(Long id);
+    int modifyContent(Board board);
 }

@@ -1,9 +1,13 @@
-import React, { useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { instance } from '../../../apis/util/instance';
 import { css } from '@emotion/react';
 import { IoMdHeart, IoMdHeartEmpty } from "react-icons/io";
+import ReactQuill, { Quill } from 'react-quill';
+import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
+import { storage } from '../../../firebase/firebase';
+import { v4 as uuid } from "uuid";
 /** @jsxImportSource @emotion/react */
 
 const layout = css`
@@ -183,7 +187,21 @@ const detailButtons = css`
     }
 `;
 
+const contentButtonContainer = css`
+    display: flex;
+    justify-content: flex-end;
 
+        & > button {
+            box-sizing: border-box;
+            margin-left: 4px;
+            width: 80px;
+            border: 1px solid #dbdbdb;
+            background-color: #ffffff;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+`;
 
 
 
@@ -198,7 +216,10 @@ function DetailPage(props) {
     const queryClient = useQueryClient();
     const userInfoData = queryClient.getQueryData("userInfoQuery");
     const navigate = useNavigate();
-
+    const [ istrue, setIsTrue ] = useState(false);
+    const quillRef = useRef(null);
+    const [ isUploading, setUploading ] = useState(false);
+    
 
     const [ commentData, setCommentData ] = useState({
         boardId: boardId, // 키랑 변수명 이 동일해서 그냥 boardId 로도 작성 가능
@@ -213,6 +234,13 @@ function DetailPage(props) {
         content: ""
     });
 
+    // 게시글 수정
+    const [ boards, setBoards ] = useState({
+        boardId: boardId,
+        content: ""
+    });
+
+
     // react query 정의
     // 페이지 열리면 useQuery 는 자동으로 날림
     // 게시글 디테일
@@ -221,6 +249,7 @@ function DetailPage(props) {
         async () => {
             return instance.get(`/board/${boardId}`); // url의 boardId 를 가지고 요청 보냄
         }, {
+            onSuccess: response => console.log(response),
             refetchOnWindowFocus: false,
             retry: 0
         }
@@ -314,6 +343,7 @@ function DetailPage(props) {
         }
     )
 
+    // 댓글 삭제
     const deleteCommentMutation = useMutation(
         async (commentId) => {
             return await instance.delete(`/board/comment/${commentId}`);
@@ -325,8 +355,85 @@ function DetailPage(props) {
             }
         }
     );
+
+    // 게시글 삭제
+    const deleteContentMutation = useMutation(
+        async (boardId) => {
+            return await instance.delete(`/board/content/${boardId}`);
+        },
+        {
+            onSuccess: response => {
+                alert("게시글을 삭제하였습니다.");
+                board.refetch();
+                navigate("/");
+            }
+        }
+    );
+
+    // 게시글 수정
+    const modifyCotnentMutation = useMutation(
+        async () => {
+            return await instance.put(`/board/content/${boards.boardId}`, boards);
+        },
+        {
+            onSuccess: response => {
+                console.log(response);
+                alert("수정이 완료되었습니다.");
+                setBoards({ // 초기화
+                    boardId: 0,
+                    content: ""
+                });
+                board.refetch(); 
+            }
+        }
+    )
+
+    // 게시글 수정 완료 버튼
+    const handleContentOkButton = (e) => {
+        modifyCotnentMutation.mutateAsync();
+        navigate("/");
+    }
     
-    
+    // quill 로 값 받아오기
+    const handleQuillValueOnChange = (value) => {
+        setBoards(boards => ({
+            ...boards,
+            content: value
+        }));
+    }
+
+
+    const handleImageLoad = useCallback(() => {
+    const input = document.createElement("input");
+    input.setAttribute("type", "file");
+    input.click();
+
+    input.onchange = () => {
+    const editor = quillRef.current.getEditor(); // getEditor ㅎㅏ면 editor 객체를 가져옴
+    const files = Array.from(input.files); // input에 입력된 이미지를 array로 변환!
+    const imgFile = files[0]; // 첫번째 이미지 들고옴 ( 요건 무조건 ~ )
+
+    const editPoint = editor.getSelection(true); // 맨 위 맨 왼쪽을 커서 시작점으로 잡음
+
+            // storage는 firebase에 있는거얌
+    const storageRef = ref(storage, `board/img/${uuid()}_${imgFile.name}`);
+    const task = uploadBytesResumable(storageRef, imgFile); // 해당 경로에 이미지파일을 올려라
+    setUploading(true);
+    task.on(
+        "state_changed",
+            () => {}, // snapshot
+            () => {}, // error
+            async () => { // success
+                const url = await getDownloadURL(storageRef); // firebase에서 url 가져와서 
+                editor.insertEmbed(editPoint.index, "image", url); // url에 해당하는 이미지 첨부
+                editor.setSelection(editPoint.index + 1); // 커서를 첨부된 이미지 끝으로 이동
+                editor.insertText(editPoint.index + 1, "\n"); // 줄바꿈
+                setUploading(false);
+            } 
+        );
+    }
+    },[]);
+
     const handleLikeOnClike = () => {
         if(!userInfoData?.data) { // 로그인이 안되어 있으면
             if(window.confirm("로그인 후 이용 가능합니다. 로그인 페이지로 이동하시겠습니까 ?")) {
@@ -393,7 +500,7 @@ function DetailPage(props) {
         }));
     }
 
-    // 수정 버튼
+    // 댓글 수정 버튼
     const handleModifyCommentButtonOnClick = (commentId, content) => {
         setCommentModifyData(commentData => ({
             commentId,
@@ -408,13 +515,38 @@ function DetailPage(props) {
         }));
     }
 
+    // 댓글 삭제 버튼
     const handleDeleteCommentButtonOnClick = (commentId) => {
         deleteCommentMutation.mutateAsync(commentId);
     }
 
+    // 게시글 삭제 버튼
+    const handleDeleteContentButtonOnClick = (boardId) => {
+        deleteContentMutation.mutateAsync(boardId);
+    }
     
+    // 게시글 수정 버튼
+    const handleModifyContentButtonOnClick = (e) => {
+        setIsTrue(true);
+    }
 
+    const toolbarOptions = useMemo(() => [
+        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+        [{ 'font': [] }],
+        ['bold', 'italic', 'underline', 'strike'],        
+        [{ 'color': [] }, { 'background': [] }, { 'align': [] }],          
+        [{ 'list': 'ordered'}, { 'list': 'bullet' }, { 'list': 'check' }],
+        [{ 'indent': '-1'}, { 'indent': '+1' }],          
+        ['link', 'image', 'video', 'formula'],
+        ['blockquote', 'code-block'],
+        ], []);
 
+        const quill = new Quill('#editor', {
+        modules: {
+            toolbar: toolbarOptions
+        },
+        theme: 'snow'
+    });
 
 
     return (
@@ -459,23 +591,47 @@ function DetailPage(props) {
                                         추천: {boardLike?.data?.data.likeCount}
                                     </span>
                                 </div>
-                            <div>
-                                {
-                                    board.data.data.writerId === userInfoData?.data.userId && 
-                                    <>
-                                        <button>수정</button>
-                                        <button>삭제</button>
-                                    </>
-                                }
-                            </div>
+                                <div>
+                                    {
+                                        board.data.data.writerId === userInfoData?.data.userId && 
+                                        <>
+                                            <button onClick={handleModifyContentButtonOnClick}>수정</button>
+                                            <button onClick={() => handleDeleteContentButtonOnClick(boardId)}>삭제</button>
+                                        </>
+                                    }
+                                </div>
                             </div>
                         </div>
                         
-                        <div css={contentBox} dangerouslySetInnerHTML={{
-                            __html: board.data.data.content
-                        }}>
-                        </div>
-
+                        {
+                            istrue === true 
+                            ?
+                            <>
+                            <div css={contentButtonContainer}>
+                                <button onClick={handleContentOkButton}>확인</button>
+                            </div>
+                            <ReactQuill 
+                                onChange={handleQuillValueOnChange}
+                                modules={{
+                                toolbar: {
+                                container: toolbarOptions,
+                                handlers: {
+                                image: handleImageLoad,
+                                    }
+                                    },
+                                imageResize: {
+                                Parchment: Quill.import("parchment")
+                                    },
+                                }}
+                            />
+                            </>
+                            :
+                            <div css={contentBox} dangerouslySetInnerHTML={{
+                                __html: board.data.data.content
+                            }}>
+                            </div>
+                    }
+                    
                         <div css={commentContainer}>
                                 <h2>댓글 {comments?.data?.data.commentCount}</h2>
                                 {
@@ -515,7 +671,7 @@ function DetailPage(props) {
                                                                     :
                                                                     <button onClick={() => handleModifyCommentButtonOnClick(comment.id, comment.content)}>수정</button>
                                                                 // content 를 같이 보내주는 이유: 작성한 글 textarea에 보여주려고
-                                                                }
+                                                            }
                                                                 <button onClick={() => handleDeleteCommentButtonOnClick(comment.id)}>삭제</button>
                                                         </div>
                                                         }

@@ -55,6 +55,14 @@
             id in(select id from comment_tree)
     </delete>
 
+    <delete id="deleteByBoardId">
+        delete
+        from
+            comment
+        where
+            board_id = #{boardId}
+    </delete>
+
     <select id="findAllByBoardId" resultType="com.study.SpringSecurityMybatis.entity.Comment">
         WITH RECURSIVE comment_tree(id, board_id, parent_id, content, writer_id, create_date, level, path) AS (
             <!-- with 문 = 아래의 () 안에 있는 sql문의 결과를 ( 즉, select union all select 문 ) comment_tree 라는 가상의 테이블에 저장해라-->

@@ -106,33 +106,6 @@ function WritePage(props) {
         navigate(`/board/detail/${boardData.boardId.id}`); 
     }
 
-    
-    // const handleWriteSubmitOnClick2 = async () => {
-    //     instance.post("/board", board) 
-
-    //     .then((response) => {
-    //         alert("작성 완료");
-    //         navigate(`/board/detail/${response.data.boardId}`);
-    //     })
-    //     .catch((error) => {
-    //         console.error(error); // 오류 처리
-    //         const fieldErrors = error.response.data;
-
-    //         for (let fieldError of fieldErrors) {
-    //             if (fieldError.field === "title") {
-    //                 alert(fieldError.defaultMessage);
-    //                 return;
-    //             }
-    //         }
-    //         for (let fieldError of fieldErrors) {
-    //             if (fieldError.field === "content") {
-    //                 alert(fieldError.defaultMessage);
-    //                 return;
-    //             }
-    //         }
-    //     });
-    // }
-
 
     const handleTitleInputOnChange = (e) => {
         setBoard(board => ({

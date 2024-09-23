@@ -2,9 +2,11 @@ package com.study.SpringSecurityMybatis.controller;
 
 import com.study.SpringSecurityMybatis.aspect.annotation.ValidAop;
 import com.study.SpringSecurityMybatis.dto.request.ReqBoardListDto;
+import com.study.SpringSecurityMybatis.dto.request.ReqModifyContentDto;
 import com.study.SpringSecurityMybatis.dto.request.ReqSearchBoardDto;
 import com.study.SpringSecurityMybatis.dto.request.ReqWriteBoardDto;
 import com.study.SpringSecurityMybatis.service.BoardService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+@Slf4j
 @RestController
 public class BoardController {
 
@@ -66,4 +69,19 @@ public class BoardController {
         return ResponseEntity.ok().body(true);
     }
 
+    // 게시글 삭제
+    @DeleteMapping("/board/content/{boardId}")
+    public ResponseEntity<?> deleteBoard(@PathVariable Long boardId) {
+        log.info("게시글 삭제 요청 : {}", boardId);
+        boardService.deleteBoards(boardId);
+        return ResponseEntity.ok().body(true);
+    }
+
+    // 게시글 수정
+    @PutMapping("/board/content/{boardId}")
+    public ResponseEntity<?> modifyContent(@RequestBody ReqModifyContentDto dto) {
+        log.info("게시글 수정 요청 : {}", dto);
+        boardService.modifyContent(dto);
+        return ResponseEntity.ok().body(true);
+    }
 }
