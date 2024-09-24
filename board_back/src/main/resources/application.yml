@@ -7,7 +7,7 @@ spring:
     driver-class-name: org.h2.Driver
     username: sa
     password:
-    initialization-mode: NEVER
+    initialization-mode: never
     schema: classpath:schema.sql
 
   h2:

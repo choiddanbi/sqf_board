@@ -55,6 +55,7 @@ public class JwtAccessTokenFilter extends GenericFilter {
             // UsernamePasswordAuthenticationToken 객체를 생성해서
             // SecurityContextHolder.getContext어쩌구 에 담음
             SecurityContextHolder.getContext().setAuthentication(authentication);
+
             /*
                1. claims 는 토큰의 payload 부분인데 userId를 가지고 있음
                2. claims 를 담고 있는게 principalUser 인데 토큰검사를 통과한 user

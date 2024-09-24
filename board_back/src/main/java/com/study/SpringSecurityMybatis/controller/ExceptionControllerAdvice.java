@@ -8,6 +8,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.Map;
+
 // ioc 에서 발생한 예외를 낚아옴
 @RestControllerAdvice
 public class ExceptionControllerAdvice {
@@ -40,5 +42,13 @@ public class ExceptionControllerAdvice {
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<?> accessDeniedException(AccessDeniedException e) {
         return ResponseEntity.status(403).body(e.getMessage());
+    }
+
+    @ExceptionHandler(EmailValidException.class)
+    public ResponseEntity<?> emailValidException(EmailValidException e) {
+        return ResponseEntity.status(403).body(Map.of(
+                "message", e.getMessage(),
+                "email", e.getEmail()
+        ));
     }
 }

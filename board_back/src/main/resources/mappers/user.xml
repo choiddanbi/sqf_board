@@ -11,6 +11,7 @@
         <result property="password" column="password" />
         <result property="name" column="name" />
         <result property="email" column="email" />
+        <result property="emailValid" column="email_valid" />
         <result property="img" column="img" />
         <collection property="oAuth2Users" javaType="java.util.Set" resultMap="oAuth2UserResultMap" />
         <collection property="userRoles" javaType="java.util.Set" resultMap="userRolesResultMap" />
@@ -43,6 +44,14 @@
             id = #{id}
     </update>
 
+    <update id="modifyEmailValidByUsername">
+        update user
+        set
+            email_valid = 1
+        where
+            username = #{username}
+    </update>
+
     <delete id="deleteById">
         delete
         from
@@ -58,6 +67,7 @@
             u.password,
             u.name,
             u.email,
+            u.email_valid,
             u.img,
             ou.id as oauth2_user_id,
             ou.user_id as ou_user_id,
@@ -111,6 +121,7 @@
             u.password,
             u.name,
             u.email,
+            u.email_valid,
             u.img,
             ou.id as oauth2_user_id,
             ou.user_id as ou_user_id,
@@ -134,7 +145,7 @@
             useGeneratedKeys="true"
             keyProperty="id">
         insert into user
-        values(default, #{username}, #{password}, #{name}, #{email}, default)
+        values(default, #{username}, #{password}, #{name}, #{email}, default, #{emailValid})
     </insert>
 
 </mapper>

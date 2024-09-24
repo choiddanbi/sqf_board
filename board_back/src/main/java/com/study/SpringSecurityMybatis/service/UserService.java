@@ -13,6 +13,7 @@ import com.study.SpringSecurityMybatis.entity.Role;
 import com.study.SpringSecurityMybatis.entity.User;
 import com.study.SpringSecurityMybatis.entity.UserRoles;
 import com.study.SpringSecurityMybatis.exception.DeleteUserException;
+import com.study.SpringSecurityMybatis.exception.EmailValidException;
 import com.study.SpringSecurityMybatis.exception.SignupException;
 import com.study.SpringSecurityMybatis.repository.RoleMapper;
 import com.study.SpringSecurityMybatis.repository.UserMapper;
@@ -86,13 +87,18 @@ public class UserService {
         }
 
         return RespSignupDto.builder()
-                .message("회원가입 완료")
+                .message("가입하신 이메일 주소를 통해 인증 후 사용할 수 있습니다.")
                 .user(user)
                 .build();
     }
 
     public RespSigninDto getGeneratedAccessToken(ReqSigninDto dto) {
         User user = checkUsernameAndPassword(dto.getUsername(), dto.getPassword());
+
+        // 이메일 유효성 검사에서 FAIL 나면 토큰 발급을 안해주겠다!
+        if(user.getEmailValid() != 1) {
+            throw new EmailValidException(user.getEmail());
+        }
 
         return RespSigninDto.builder()
                 .expireDate(jwtProvider.getExpireDate().toLocaleString())

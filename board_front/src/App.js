@@ -13,6 +13,7 @@ import DetailPage from "./pages/BoardPages/DatailPage/DetailPage";
 import NumberBoardListPage from "./pages/BoardPages/NumberBoardListPage/NumberBoardListPage";
 import ScrollBoardListPage from "./pages/BoardPages/ScrollBoardListPage/ScrollBoardListPage";
 import SearchBoardPage from "./pages/BoardPages/SearchBoardPage/SearchBoardPage";
+import MailPage from "./pages/MailPage/MailPage";
 
 /** 
  * 페이지 이동 시 Auth(로그인, 토큰) 확인
@@ -104,6 +105,7 @@ function App() {
     return (
         <Routes>
             <Route path="/" element={ <IndexPage /> }/>
+            <Route path="/mail" element={ <MailPage /> }/>
             <Route path="/user/join" element={ <UserJoinPage /> }/>
             <Route path="/user/join/oauth2" element={ <OAuth2JoinPage /> }/>
             

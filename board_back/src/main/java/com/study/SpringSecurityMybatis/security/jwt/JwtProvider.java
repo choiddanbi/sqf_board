@@ -10,6 +10,7 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.xml.crypto.Data;
 import java.security.Key;
 import java.util.Date;
 
@@ -34,6 +35,16 @@ public class JwtProvider {
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
+
+    public String generateEmailValidToken(String username) {
+        Date expireDate = new Date(new Date().getTime() + (1000l * 60 * 5));
+        return Jwts.builder()
+                .claim("username", username)
+                .expiration(expireDate)
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+    }
+
 
     public String removeBearer(String bearerToken) throws RuntimeException {
         if(bearerToken == null) {

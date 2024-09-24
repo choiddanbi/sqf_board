@@ -163,6 +163,7 @@ function IndexPage(props) {
                     <Link to={"/board/scroll"}>게시글 스크롤</Link>
                     <Link to={"/board/search?page=1"}>게시글 검색</Link>
                     <Link to={"/board/write"}>글쓰기</Link>
+                    <Link to={"/mail"}>메일전송</Link>
                 </div>
                     {
                         accessTokenValidState.status !== "success"

@@ -69,6 +69,9 @@
 
 --ALTER TABLE BOARD ADD COLUMN view_count INT not null DEFAULT 0;
 
+-- ALTER TABLE USER ADD COLUMN email_valid INT not null DEFAULT 0;
+
+
 
 
 

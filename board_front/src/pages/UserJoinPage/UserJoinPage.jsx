@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import { css } from '@emotion/react';
 import { Link, useNavigate } from 'react-router-dom';
 import { signupApi } from '../../apis/signupApi';
+import { useMutation } from 'react-query';
+import { instance } from '../../apis/util/instance';
 
 const layout = css`
     display: flex;
@@ -88,6 +90,11 @@ function UserJoinPage(props) {
         email: <></>,
     }); 
 
+    const sendMail = useMutation(
+        async ({ toEmail, username }) => 
+            await instance.post("/auth/mail", { toEmail, username })
+    );
+
     const handleInputUserOnChange = (e) => {
         setInputUser(inputUser => ({
             ...inputUser,
@@ -95,6 +102,7 @@ function UserJoinPage(props) {
         }));
     }
 
+    
     const handleJoinSubmitOnClick = async () => {
         const signupData = await signupApi(inputUser);
         if(!signupData.isSuceess) {
@@ -102,7 +110,14 @@ function UserJoinPage(props) {
             return;
         }
 
+        // 회원가입 한 이메일로 sendMail 요청까지
+        const toEmail = signupData.ok.user.email;
+        const username = signupData.ok.user.username;
+        console.log(toEmail);
+        console.log(username);
+        await sendMail.mutateAsync({ toEmail, username }); // mutate 호출 시 하나의 값 만 주고받을 수 있음
         alert(`${signupData.ok.message}`);
+
         navigate("/user/login");
     }
 
